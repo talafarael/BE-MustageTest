@@ -24,7 +24,7 @@ model Task {
   id             String    @id @default(uuid())
   title          String
   description    String?
-  dueDate        DateTime?
+  createDate     DateTime  @default(now())
   completionDate DateTime?
   userId         Int
   user           User      @relation("UserTasks", fields: [userId], references: [id])

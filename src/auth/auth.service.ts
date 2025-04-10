@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
@@ -28,7 +28,7 @@ export class AuthService {
     try {
       const user = await this.userService.findOne(data.email)
       if (user) {
-        throw new NotFoundException('this name was used');
+        throw new ConflictException('This email is already in use');
       }
       const saltRounds = 10;
       const hashedPassword = await bcrypt.hash(data.password, saltRounds);
@@ -39,18 +39,22 @@ export class AuthService {
           password: hashedPassword
         }
       })
-      return newUser
+      const payload = { email: newUser.email, sub: newUser.id };
+
+      return {
+        token: this.jwtService.sign(payload),
+      }
     } catch (e) {
       console.error(e)
-      throw new Error('Registration failed');
+      throw new Error(e);
     }
 
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
+    const payload = { email: user.email, sub: user.id };
     return {
-      access_token: this.jwtService.sign(payload),
+      token: this.jwtService.sign(payload),
     };
   }
 }
