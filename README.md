@@ -9,17 +9,14 @@ DATABASE_URL="postgresql://mustage:randompassword@localhost:5432/mydb?schema=pub
 2. Start Docker services
 Make sure Docker is running, then start the services:
 
-bash
-Копіювати
-Редагувати
+
 docker-compose up -d
 3. Install dependencies
 If you haven't already:
 
-bash
 npm install
 4. Run the server
-bash
+
 npm run start
 ✅ Done. The server should now be running and connected to the database.
 ```
